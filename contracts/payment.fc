@@ -1,0 +1,90 @@
+#pragma version >=0.4.0;
+
+#include "stdlib.fc";
+
+;; Simple payment contract for offchain game purchases.
+;; Accepts TON, distinguishes purchases by opcode.
+;; No jettons, no mint.
+
+const int OP_ENERGY = 0x01;
+const int OP_SHIELD = 0x02;
+const int OP_MAGNET = 0x03;
+const int OP_BUNDLE = 0x04;
+
+;; Storage:
+;; owner_address   : MsgAddress
+;; reserve_address : MsgAddress
+;; reserve_bps     : uint16   (0..10000)
+
+() store_data(slice owner_address, slice reserve_address, int reserve_bps) impure inline {
+    set_data(
+        begin_cell()
+            .store_slice(owner_address)
+            .store_slice(reserve_address)
+            .store_uint(reserve_bps, 16)
+            .end_cell()
+    );
+}
+
+(slice, slice, int) load_data() inline {
+    var ds = get_data().begin_parse();
+    var owner = ds~load_msg_addr();
+    var reserve = ds~load_msg_addr();
+    var reserve_bps = ds~load_uint(16);
+    return (owner, reserve, reserve_bps);
+}
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    var cs = in_msg_full.begin_parse();
+    var flags = cs~load_uint(4);
+    var sender = cs~load_msg_addr();
+
+    if (slice_empty?(in_msg_body)) {
+        return ();
+    }
+
+    int op = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
+
+    if ((op != OP_ENERGY) & (op != OP_SHIELD) & (op != OP_MAGNET) & (op != OP_BUNDLE)) {
+        return ();
+    }
+
+    var (owner, reserve, reserve_bps) = load_data();
+
+    accept_message();
+
+    int reserve_amount = (msg_value * reserve_bps) / 10000;
+
+    if (reserve_amount > 0) {
+        send_raw_message(
+            begin_cell()
+                .store_uint(0x18, 6)
+                .store_slice(reserve)
+                .store_coins(reserve_amount)
+                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1)
+                .store_uint(op, 32)
+                .store_uint(query_id, 64)
+                .end_cell(),
+            1
+        );
+    }
+
+    send_raw_message(
+        begin_cell()
+            .store_uint(0x18, 6)
+            .store_slice(owner)
+            .store_coins(0)
+            .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1)
+            .store_uint(op, 32)
+            .store_uint(query_id, 64)
+            .end_cell(),
+        65
+    );
+}
+
+;; Get methods
+
+(slice, slice, int) get_config() method_id {
+    return load_data();
+}
