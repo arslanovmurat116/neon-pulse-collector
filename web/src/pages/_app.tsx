@@ -14,7 +14,13 @@ const TonConnectUIProvider = dynamic(
 export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false);
   const [connector, setConnector] = useState<TonConnect | null>(null);
-  const manifestUrl = process.env.NEXT_PUBLIC_TON_CONNECT_MANIFEST || "";
+  const manifestUrl = useMemo(() => {
+    const fromEnv = (process.env.NEXT_PUBLIC_TON_CONNECT_MANIFEST || "").trim();
+    if (process.env.NODE_ENV === "development") {
+      return fromEnv || "http://localhost:3000/tonconnect-manifest.json";
+    }
+    return fromEnv;
+  }, []);
   const baseUrl = useMemo(() => {
     const envUrl = (process.env.NEXT_PUBLIC_APP_URL || "").trim();
     if (envUrl) return envUrl.replace(/\/$/, "");
