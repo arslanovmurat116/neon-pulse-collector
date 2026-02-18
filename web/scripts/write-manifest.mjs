@@ -26,11 +26,28 @@ function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
-const env = parseEnv(envPath);
-const baseUrl =
-  env.NEXT_PUBLIC_APP_URL && env.NEXT_PUBLIC_APP_URL.trim()
-    ? env.NEXT_PUBLIC_APP_URL.trim()
-    : "http://localhost:3000";
+const fileEnv = parseEnv(envPath);
+
+const appUrlFromEnv =
+  (process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.trim()) ||
+  (fileEnv.NEXT_PUBLIC_APP_URL && fileEnv.NEXT_PUBLIC_APP_URL.trim());
+
+const vercelUrl =
+  process.env.VERCEL_URL && process.env.VERCEL_URL.trim()
+    ? `https://${process.env.VERCEL_URL.trim()}`
+    : "";
+
+let baseUrl = appUrlFromEnv || vercelUrl;
+
+if (!baseUrl) {
+  if (process.env.NODE_ENV === "development") baseUrl = "http://localhost:3000";
+  else
+    throw new Error(
+      "NEXT_PUBLIC_APP_URL (или VERCEL_URL) не задан — нельзя собрать manifest без домена"
+    );
+}
+
+baseUrl = baseUrl.replace(/\/$/, "");
 
 const manifest = {
   url: baseUrl,
