@@ -8,6 +8,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -17,6 +24,11 @@ body {
   color: #39ff14;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.6;
+}
+
+.game-container,
+canvas {
+  touch-action: none;
 }
 
 /* Неоновые стили */

@@ -56,6 +56,15 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [manifestUrl, walletsListSource]);
 
+  useEffect(() => {
+    const tg = (window as typeof window & { Telegram?: { WebApp?: any } }).Telegram?.WebApp;
+    if (!tg) return;
+    tg.ready();
+    tg.disableVerticalSwipes();
+    tg.expand();
+    if (tg.isVersionAtLeast("8.0")) tg.requestFullscreen();
+  }, []);
+
   if (!ready) {
     return null;
   }
