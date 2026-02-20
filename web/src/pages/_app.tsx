@@ -1,4 +1,4 @@
-import type { AppProps } from "next/app";
+﻿import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
@@ -62,7 +62,6 @@ export default function App({ Component, pageProps }: AppProps) {
     tg.ready();
     tg.disableVerticalSwipes();
     tg.expand();
-    if (tg.isVersionAtLeast("8.0")) tg.requestFullscreen();
   }, []);
 
   if (!ready) {
@@ -82,3 +81,4 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
+

@@ -51,6 +51,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const statusRef = useRef<GameStatus>(GameStatus.START);
   const sizeRef = useRef({ width: 0, height: 0 });
   const upgradesRef = useRef(upgrades);
+  const fullscreenRequestedRef = useRef(false);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => {
@@ -169,7 +170,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     [isMuted]
   );
 
+
+  const requestTelegramFullscreen = useCallback(() => {
+    if (fullscreenRequestedRef.current) return;
+    fullscreenRequestedRef.current = true;
+    try {
+      const tg = (window as typeof window & { Telegram?: { WebApp?: any } }).Telegram?.WebApp;
+      tg?.expand?.();
+      if (tg?.isVersionAtLeast?.("8.0")) tg.requestFullscreen?.();
+    } catch (error) {
+      console.warn("[GAME] fullscreen request failed", error);
+    }
+  }, []);
+
   const resetGame = useCallback(() => {
+    requestTelegramFullscreen();
     const centerX = size.width / 2;
     const centerY = size.height / 2;
     gameState.current = {
@@ -188,7 +203,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     setStatus(GameStatus.PLAYING);
     reportedGameOver.current = false;
     playSound("start");
-  }, [maxEnergy, playSound, size.height, size.width]);
+  }, [maxEnergy, playSound, requestTelegramFullscreen, size.height, size.width]);
 
   const togglePause = useCallback(() => {
     setStatus((prev) => {
@@ -197,6 +212,40 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       return prev;
     });
   }, []);
+
+
+
+  useEffect(() => {
+    if (!mounted) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const onFirstPointerDown = () => {
+      requestTelegramFullscreen();
+    };
+
+    canvas.addEventListener("pointerdown", onFirstPointerDown, { once: true });
+    return () => {
+      canvas.removeEventListener("pointerdown", onFirstPointerDown);
+    };
+  }, [mounted, requestTelegramFullscreen]);
+
+  useEffect(() => {
+    if (!active) return;
+
+    const preventTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+    };
+
+    const container = containerRef.current;
+    container?.addEventListener("touchmove", preventTouchMove, { passive: false });
+    document.body.addEventListener("touchmove", preventTouchMove, { passive: false });
+
+    return () => {
+      container?.removeEventListener("touchmove", preventTouchMove);
+      document.body.removeEventListener("touchmove", preventTouchMove);
+    };
+  }, [active]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -525,7 +574,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full font-sans selection:bg-blue-500 selection:text-white overflow-hidden bg-slate-950"
+      className="game-container relative w-full h-full font-sans selection:bg-blue-500 selection:text-white overflow-hidden bg-slate-950"
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
 
