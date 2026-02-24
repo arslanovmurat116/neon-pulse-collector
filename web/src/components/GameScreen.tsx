@@ -603,6 +603,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
   const energyColor = useMemo(() => (energy > 30 ? COLORS.ENERGY : COLORS.HAZARD), [energy]);
   const unlockUpgradesChars = useMemo(() => t("game.onboarding.unlockHighlight").split(""), [t]);
+  const energyPercent = Math.min(1, Math.max(0, energy / maxEnergy));
+  console.log("[ENERGY]", { energy, maxEnergy, percent: energyPercent });
 
   if (!mounted) return null;
 
@@ -660,7 +662,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           <div
             className="h-full transition-all duration-100 ease-linear"
             style={{
-              width: `${(energy / maxEnergy) * 100}%`,
+              width: `${energyPercent * 100}%`,
               backgroundColor: energyColor,
               boxShadow: `0 0 12px ${energyColor}`,
             }}
