@@ -29,6 +29,9 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   const walletsListSource = useMemo(() => {
+    if (process.env.NODE_ENV === "production") {
+      return "https://raw.githubusercontent.com/ton-blockchain/wallets-list/main/wallets-v2.json";
+    }
     if (!baseUrl) return "";
     const url = new URL("/wallets.json", baseUrl);
     if (url.hostname.endsWith(".ngrok-free.dev")) {
