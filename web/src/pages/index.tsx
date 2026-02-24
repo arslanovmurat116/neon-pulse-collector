@@ -59,36 +59,50 @@ export default function Home() {
   );
 
   return (
-    <div className="ui-caps min-h-screen bg-gradient-to-b from-neon-dark via-neon-dark to-neon-dark/90 text-white">
-      <header className="px-4 md:px-6 pt-6 pb-4 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-black text-neon-green">{t("app.name")}</h1>
-        </div>
-        <div className="sticky top-4 flex items-center gap-3">
-          <div className="inline-flex rounded-lg border border-slate-700 overflow-hidden">
-            <button
-              onClick={() => changeLang("ru")}
-              className={`px-3 py-2 text-xs font-bold ${
-                lang === "ru" ? "bg-neon-green/20 text-neon-green" : "bg-slate-900/60 text-slate-300"
-              }`}
-            >
-              {t("common.langRu")}
-            </button>
-            <button
-              onClick={() => changeLang("en")}
-              className={`px-3 py-2 text-xs font-bold ${
-                lang === "en" ? "bg-neon-green/20 text-neon-green" : "bg-slate-900/60 text-slate-300"
-              }`}
-            >
-              {t("common.langEn")}
-            </button>
+    <div className="ui-caps relative min-h-screen bg-gradient-to-b from-neon-dark via-neon-dark to-neon-dark/90 text-white">
+      {activeView === "home" && (
+        <>
+          <div className="absolute inset-0 pointer-events-none">
+            <GameScreen upgrades={upgrades} active demo />
           </div>
-          <WalletConnect />
-        </div>
-      </header>
+          <div className="absolute inset-0 pointer-events-none bg-slate-950/55 backdrop-blur-[2px]" />
+        </>
+      )}
 
-      <main className="px-4 md:px-6 pb-6 space-y-6">
-        <section className="flex flex-col gap-4 max-w-xl mx-auto w-full">
+      <main className="relative z-10 min-h-screen px-4 md:px-6 py-6 flex items-center justify-center">
+        <section className="w-full max-w-xl mx-auto">
+          <div className="mb-5 text-center">
+            <h1
+              className="text-3xl md:text-4xl font-black text-neon-green"
+              style={{ textShadow: "0 0 7px rgba(57,255,20,0.7), 0 0 14px rgba(57,255,20,0.7)" }}
+            >
+              {t("app.name")}
+            </h1>
+          </div>
+
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <WalletConnect />
+            <div className="inline-flex rounded-lg border border-slate-700 overflow-hidden text-[10px]">
+              <button
+                onClick={() => changeLang("ru")}
+                className={`px-2 py-1 font-bold ${
+                  lang === "ru" ? "bg-neon-green/20 text-neon-green" : "bg-slate-900/60 text-slate-300"
+                }`}
+              >
+                {t("common.langRu")}
+              </button>
+              <button
+                onClick={() => changeLang("en")}
+                className={`px-2 py-1 font-bold ${
+                  lang === "en" ? "bg-neon-green/20 text-neon-green" : "bg-slate-900/60 text-slate-300"
+                }`}
+              >
+                {t("common.langEn")}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 max-w-md mx-auto">
           {tiles.map((tile) => (
             <button
               key={tile.key}
@@ -99,6 +113,7 @@ export default function Home() {
               <div className="text-sm text-neon-cyan/70 mt-2">{tile.desc}</div>
             </button>
           ))}
+          </div>
         </section>
       </main>
 

@@ -15,18 +15,20 @@ type GameScreenProps = {
   upgrades: PlayerUpgrades;
   onGameOver?: (score: number) => void;
   active?: boolean;
+  demo?: boolean;
 };
 
 export const GameScreen: React.FC<GameScreenProps> = ({
   upgrades,
   onGameOver,
   active = true,
+  demo = false,
 }) => {
   const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mounted, setMounted] = useState(false);
-  const [status, setStatus] = useState<GameStatus>(GameStatus.START);
+  const [status, setStatus] = useState<GameStatus>(demo ? GameStatus.PLAYING : GameStatus.START);
   const [score, setScore] = useState(0);
   const [energy, setEnergy] = useState(INITIAL_ENERGY);
   const [isMuted, setIsMuted] = useState(false);
@@ -76,6 +78,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   }, [upgrades]);
 
   useEffect(() => {
+    if (demo) return;
     if (!mounted) return;
     try {
       const saved = localStorage.getItem("neon-pulse-highscore");
@@ -83,7 +86,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     } catch {
       setHighScore(0);
     }
-  }, [mounted]);
+  }, [demo, mounted]);
 
   const maxEnergy = useMemo(
     () => Math.max(10, INITIAL_ENERGY + upgrades.energyBonus),
@@ -106,6 +109,16 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     }
     prevEnergyBonus.current = upgrades.energyBonus;
   }, [upgrades.energyBonus]);
+
+  useEffect(() => {
+    if (!demo) return;
+    if (!size.width || !size.height) return;
+    gameState.current.playerPos = { x: size.width / 2, y: size.height / 2 };
+    gameState.current.maxEnergy = maxEnergy;
+    gameState.current.energy = maxEnergy;
+    setEnergy(maxEnergy);
+    setStatus(GameStatus.PLAYING);
+  }, [demo, maxEnergy, size.height, size.width]);
 
   const playSound = useCallback(
     (type: "collect" | "hit" | "bonus" | "start") => {
@@ -218,6 +231,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
 
   useEffect(() => {
+    if (demo) return;
     if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -230,9 +244,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     return () => {
       canvas.removeEventListener("pointerdown", onFirstPointerDown);
     };
-  }, [mounted, requestTelegramFullscreen]);
+  }, [demo, mounted, requestTelegramFullscreen]);
 
   useEffect(() => {
+    if (demo) return;
     if (!active) return;
 
     const preventTouchMove = (e: TouchEvent) => {
@@ -247,9 +262,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       container?.removeEventListener("touchmove", preventTouchMove);
       document.body.removeEventListener("touchmove", preventTouchMove);
     };
-  }, [active]);
+  }, [active, demo]);
 
   useEffect(() => {
+    if (demo) return;
     if (!mounted) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" || e.key === "p" || e.key === "P") togglePause();
@@ -257,7 +273,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mounted, togglePause]);
+  }, [demo, mounted, togglePause]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -390,8 +406,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       if (!activeRef.current) return;
 
       gameState.current.frame++;
-      gameState.current.energy -= ENERGY_DECAY;
-      setEnergy(Math.max(0, gameState.current.energy));
+      if (demo) {
+        gameState.current.energy = gameState.current.maxEnergy;
+        setEnergy(gameState.current.maxEnergy);
+      } else {
+        gameState.current.energy -= ENERGY_DECAY;
+        setEnergy(Math.max(0, gameState.current.energy));
+      }
 
       if (gameState.current.bonuses.shield > 0) gameState.current.bonuses.shield--;
       if (gameState.current.bonuses.magnet > 0) gameState.current.bonuses.magnet--;
@@ -403,7 +424,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         });
       }
 
-      if (gameState.current.energy <= 0) {
+      if (!demo && gameState.current.energy <= 0) {
         playSound("hit");
         setStatus(GameStatus.GAMEOVER);
       }
@@ -428,6 +449,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         p.x += p.vx;
         p.y += p.vy;
         p.pulse = (p.pulse || 0) + 0.1;
+
+        if (demo) {
+          const { width, height } = sizeRef.current;
+          return p.x > -200 && p.x < width + 200 && p.y > -200 && p.y < height + 200;
+        }
 
         const dx = p.x - gameState.current.playerPos.x;
         const dy = p.y - gameState.current.playerPos.y;
@@ -556,9 +582,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         console.log("[GAME] loop stopped");
       }
     };
-  }, [mounted, playSound, size.height, size.width]);
+  }, [demo, mounted, playSound, size.height, size.width]);
 
   useEffect(() => {
+    if (demo) return;
     if (status === GameStatus.GAMEOVER && score > highScore) {
       setHighScore(score);
       localStorage.setItem("neon-pulse-highscore", score.toString());
@@ -567,7 +594,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       reportedGameOver.current = true;
       onGameOver?.(score);
     }
-  }, [status, score, highScore, onGameOver]);
+  }, [demo, status, score, highScore, onGameOver]);
 
   const energyColor = useMemo(() => (energy > 30 ? COLORS.ENERGY : COLORS.HAZARD), [energy]);
   const unlockUpgradesChars = useMemo(() => t("game.onboarding.unlockHighlight").split(""), [t]);
@@ -581,6 +608,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
 
+      {!demo && (
       <div className="absolute top-0 left-0 w-full pt-16 md:pt-20 px-3 md:px-4 flex flex-col md:flex-row justify-between items-center md:items-start pointer-events-none select-none gap-3">
         <div className="flex flex-col items-center md:items-start gap-1 pointer-events-auto">
           <div className="text-white text-xl md:text-2xl font-black tracking-tighter drop-shadow-lg flex items-center gap-3">
@@ -637,8 +665,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           </div>
         </div>
       </div>
+      )}
 
-      {status === GameStatus.START && (
+      {!demo && status === GameStatus.START && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-950/90 backdrop-blur-xl z-50 p-4">
           <div className="p-6 md:p-8 bg-slate-900/60 border border-slate-800 rounded-3xl shadow-2xl max-w-md w-full text-center">
             <h1 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight">
@@ -676,7 +705,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </div>
       )}
 
-      {status === GameStatus.PAUSED && (
+      {!demo && status === GameStatus.PAUSED && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md z-40 p-4">
           <div className="text-center p-6 bg-slate-900/40 border border-slate-800/50 rounded-2xl max-w-sm w-full">
             <h2 className="text-3xl font-black text-white mb-4">{t("game.paused")}</h2>
@@ -690,7 +719,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </div>
       )}
 
-      {status === GameStatus.GAMEOVER && (
+      {!demo && status === GameStatus.GAMEOVER && (
         <div className="absolute inset-0 flex items-center justify-center bg-red-950/30 backdrop-blur-lg z-50 p-4">
           <div className="text-center p-6 bg-slate-900/80 border border-red-900/30 rounded-2xl shadow-2xl max-w-sm w-full">
             <h2 className="text-3xl font-black text-red-400 mb-4 tracking-tight">
