@@ -21,7 +21,7 @@ export const ModalOverlay: React.FC<ModalOverlayProps> = ({
     <div
       className={`fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md ${
         open ? "" : "opacity-0 pointer-events-none"
-      }`}
+      } ui-caps`}
       aria-hidden={!open}
     >
       <div className="absolute inset-0 p-4 md:p-6 pb-[env(safe-area-inset-bottom)] flex flex-col">

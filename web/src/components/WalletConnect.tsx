@@ -16,11 +16,11 @@ export const WalletConnect: React.FC<WalletConnectProps> = ({ onAddressChange })
   }, [address, onAddressChange]);
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="ui-caps flex items-center gap-3">
       {address && (
         <div className="flex flex-col items-end">
           <div className="text-xs text-neon-cyan/70">{t("wallet.connected")}</div>
-          <div className="text-sm text-neon-green font-semibold">
+          <div className="ui-no-caps text-sm text-neon-green font-semibold">
             {address.slice(0, 6)}...{address.slice(-4)}
           </div>
           <button

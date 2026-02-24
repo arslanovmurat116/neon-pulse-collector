@@ -59,7 +59,7 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neon-dark via-neon-dark to-neon-dark/90 text-white">
+    <div className="ui-caps min-h-screen bg-gradient-to-b from-neon-dark via-neon-dark to-neon-dark/90 text-white">
       <header className="px-4 md:px-6 pt-6 pb-4 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-neon-green">{t("app.name")}</h1>

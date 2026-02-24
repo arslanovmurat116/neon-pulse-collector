@@ -55,7 +55,7 @@ export const PaymentShop: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-neon-dark/80 to-neon-dark/60 border border-neon-green/30 rounded-lg p-6 w-full">
+    <div className="ui-caps bg-gradient-to-br from-neon-dark/80 to-neon-dark/60 border border-neon-green/30 rounded-lg p-6 w-full">
       <h2 className="text-2xl font-bold text-neon-green mb-6 animate-glow">{t("shop.title")}</h2>
 
       <div className="grid grid-cols-1 gap-4">
@@ -84,9 +84,12 @@ export const PaymentShop: React.FC = () => {
       </div>
 
       {!isConnected && (
-        <div className="mt-4 p-3 bg-neon-pink/20 border border-neon-pink rounded-lg text-neon-pink text-sm">
-          {t("shop.connectWalletToPay")}
-        </div>
+        <button
+          onClick={() => tonConnectUI?.openModal()}
+          className="mt-4 w-full p-3 bg-neon-pink/20 border border-neon-pink rounded-lg text-neon-pink text-sm font-bold hover:bg-neon-pink/30"
+        >
+          {t("shop.connectWalletToShop")}
+        </button>
       )}
     </div>
   );

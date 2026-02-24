@@ -577,7 +577,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   return (
     <div
       ref={containerRef}
-      className="game-container relative w-full h-full font-sans selection:bg-blue-500 selection:text-white overflow-hidden bg-slate-950"
+      className="ui-caps game-container relative w-full h-full font-sans selection:bg-blue-500 selection:text-white overflow-hidden bg-slate-950"
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
 

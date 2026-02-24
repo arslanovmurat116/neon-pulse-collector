@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 
 export type Lang = "ru" | "en";
 
@@ -25,6 +25,7 @@ const MESSAGES: Record<Lang, Record<string, string>> = {
     "shop.paying": "Paying...",
     "shop.unlocked": "Unlocked",
     "shop.connectWalletToPay": "Connect wallet to pay",
+    "shop.connectWalletToShop": "CONNECT WALLET TO SHOP",
     "shop.item.energy": "Energy cooldown reset",
     "shop.item.shield": "Extra shields",
     "shop.item.magnet": "Extra magnets",
@@ -91,6 +92,7 @@ const MESSAGES: Record<Lang, Record<string, string>> = {
     "shop.paying": "Оплата...",
     "shop.unlocked": "Открыто",
     "shop.connectWalletToPay": "Подключите кошелек для оплаты",
+    "shop.connectWalletToShop": "ПОДКЛЮЧИТЕ КОШЕЛЁК ДЛЯ ПОКУПОК",
     "shop.item.energy": "Сброс кулдауна энергии",
     "shop.item.shield": "Дополнительные щиты",
     "shop.item.magnet": "Дополнительные магниты",
@@ -144,7 +146,16 @@ export function getStoredLang(): Lang {
   if (typeof window === "undefined") return "en";
   const saved = window.localStorage.getItem(LANG_KEY);
   if (saved === "ru" || saved === "en") return saved;
-  return "en";
+
+  const tgLang = (
+    window as typeof window & {
+      Telegram?: { WebApp?: { initDataUnsafe?: { user?: { language_code?: string } } } };
+    }
+  ).Telegram?.WebApp?.initDataUnsafe?.user?.language_code;
+
+  const next: Lang = typeof tgLang === "string" && tgLang.toLowerCase().startsWith("ru") ? "ru" : "en";
+  window.localStorage.setItem(LANG_KEY, next);
+  return next;
 }
 
 export function setStoredLang(lang: Lang) {

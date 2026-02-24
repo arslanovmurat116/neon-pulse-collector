@@ -68,7 +68,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ latestScore }) => {
   }, [latestScore]);
 
   return (
-    <div className="bg-neon-dark/60 border border-neon-purple/20 rounded-lg p-6">
+    <div className="ui-caps bg-neon-dark/60 border border-neon-purple/20 rounded-lg p-6">
       <h3 className="text-xl font-bold text-neon-green mb-4">{t("leaderboard.title")}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm">
         <div className="p-4 rounded-lg bg-neon-dark/60 border border-neon-cyan/20">

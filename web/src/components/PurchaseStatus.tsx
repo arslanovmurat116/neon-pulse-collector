@@ -28,7 +28,7 @@ export const PurchaseStatus: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="ui-caps w-full">
       <h2 className="text-2xl font-bold text-neon-green mb-4 animate-glow">{t("purchaseStatus.title")}</h2>
       <div className="grid grid-cols-1 gap-3">
         {SHOP_ITEMS.map((item) => (

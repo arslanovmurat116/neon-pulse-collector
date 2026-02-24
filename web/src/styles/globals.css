@@ -134,3 +134,11 @@ textarea:focus {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+.ui-caps {
+  text-transform: uppercase;
+}
+
+.ui-no-caps {
+  text-transform: none !important;
+}
