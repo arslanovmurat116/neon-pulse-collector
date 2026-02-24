@@ -11,7 +11,7 @@ import { Lang, setStoredLang, useI18n } from "@/i18n";
 type ActiveView = "home" | "play" | "leaderboard" | "shop";
 
 const TILE_BASE =
-  "w-full p-6 md:p-8 rounded-2xl border text-left transition-all hover:scale-[1.01] active:scale-[0.99]";
+  "w-full p-6 md:p-8 rounded-2xl border text-center transition-all hover:scale-[1.01] active:scale-[0.99]";
 
 export default function Home() {
   const [activeView, setActiveView] = useState<ActiveView>("home");

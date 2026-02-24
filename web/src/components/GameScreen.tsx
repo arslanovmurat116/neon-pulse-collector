@@ -319,6 +319,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     applySize();
 
     const updatePlayerPos = (clientX: number, clientY: number) => {
+      if (demo) return;
       if (statusRef.current !== GameStatus.PLAYING) return;
       const rect = canvas.getBoundingClientRect();
       const { width, height } = sizeRef.current;
@@ -334,8 +335,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    if (!demo) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    }
 
     let animationId: number;
 
@@ -574,8 +577,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     draw();
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchmove", handleTouchMove);
+      if (!demo) {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("touchmove", handleTouchMove);
+      }
       cancelAnimationFrame(animationId);
       if (loopActive.current) {
         loopActive.current = false;
