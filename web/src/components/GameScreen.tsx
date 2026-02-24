@@ -88,10 +88,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     }
   }, [demo, mounted]);
 
-  const maxEnergy = useMemo(
-    () => Math.max(10, INITIAL_ENERGY + upgrades.energyBonus),
-    [upgrades.energyBonus]
-  );
+  const maxEnergy = useMemo(() => {
+    const bonus = Number.isFinite(Number(upgrades.energyBonus)) ? Number(upgrades.energyBonus) : 0;
+    return Math.max(10, INITIAL_ENERGY + bonus);
+  }, [upgrades.energyBonus]);
 
   useEffect(() => {
     gameState.current.maxEnergy = maxEnergy;
@@ -603,11 +603,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     }
   }, [demo, status, score, highScore, onGameOver]);
 
-  const energyColor = useMemo(() => (energy > 30 ? COLORS.ENERGY : COLORS.HAZARD), [energy]);
+  const safeEnergy = Number.isFinite(energy) ? energy : 0;
+  const safeMaxEnergy = Number.isFinite(maxEnergy) && maxEnergy > 0 ? maxEnergy : INITIAL_ENERGY;
+  const energyColor = useMemo(() => (safeEnergy > 30 ? COLORS.ENERGY : COLORS.HAZARD), [safeEnergy]);
   const unlockUpgradesChars = useMemo(() => t("game.onboarding.unlockHighlight").split(""), [t]);
-  const safeMaxEnergy = maxEnergy > 0 ? maxEnergy : 1;
-  const energyPercent = Math.min(1, Math.max(0, energy / safeMaxEnergy));
-  console.log("[ENERGY]", { energy, maxEnergy, percent: energyPercent });
+  const energyPercent = Math.min(1, Math.max(0, safeEnergy / safeMaxEnergy));
 
   if (!mounted) return null;
 

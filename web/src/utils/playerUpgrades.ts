@@ -60,7 +60,16 @@ export function getUpgrades(): PlayerUpgrades {
   }
   try {
     const raw = localStorage.getItem(UPGRADES_KEY);
-    if (raw) return JSON.parse(raw) as PlayerUpgrades;
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<PlayerUpgrades>;
+      const normalized: PlayerUpgrades = {
+        energyBonus: Number.isFinite(Number(parsed.energyBonus)) ? Number(parsed.energyBonus) : 0,
+        shieldBoost: Number.isFinite(Number(parsed.shieldBoost)) ? Number(parsed.shieldBoost) : 0,
+        magnetBoost: Number.isFinite(Number(parsed.magnetBoost)) ? Number(parsed.magnetBoost) : 0,
+        ballsBonus: Number.isFinite(Number(parsed.ballsBonus)) ? Number(parsed.ballsBonus) : 0,
+      };
+      return normalized;
+    }
   } catch {
     // ignore
   }
