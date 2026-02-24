@@ -331,6 +331,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     };
 
     const handleMouseMove = (e: MouseEvent) => updatePlayerPos(e.clientX, e.clientY);
+    const handlePointerMove = (e: PointerEvent) => updatePlayerPos(e.clientX, e.clientY);
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         updatePlayerPos(e.touches[0].clientX, e.touches[0].clientY);
@@ -339,6 +340,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
     if (!demo) {
       window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("pointermove", handlePointerMove);
       window.addEventListener("touchmove", handleTouchMove, { passive: true });
     }
 
@@ -581,6 +583,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     return () => {
       if (!demo) {
         window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("pointermove", handlePointerMove);
         window.removeEventListener("touchmove", handleTouchMove);
       }
       cancelAnimationFrame(animationId);
