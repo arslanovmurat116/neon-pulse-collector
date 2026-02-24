@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import type { TonConnect } from "@tonconnect/sdk";
+import { useTonConnectUI } from "@tonconnect/ui-react";
 import { TonConnectDiagnostics } from "@/components/TonConnectDiagnostics";
 import "@/styles/globals.css";
 
@@ -10,6 +11,18 @@ const TonConnectUIProvider = dynamic(
   () => import("@tonconnect/ui-react").then((m) => m.TonConnectUIProvider),
   { ssr: false }
 );
+
+function TonConnectRestore() {
+  const [tonConnectUI] = useTonConnectUI();
+
+  useEffect(() => {
+    const connector = (tonConnectUI as unknown as { connector?: { restoreConnection?: () => void; connected?: boolean } }).connector;
+    connector?.restoreConnection?.();
+    console.log("[TON_CONNECT] restoreConnection done", connector?.connected);
+  }, [tonConnectUI]);
+
+  return null;
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false);
@@ -78,6 +91,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/ton-icon.png" />
       </Head>
       <TonConnectUIProvider connector={connector!} restoreConnection={false}>
+        <TonConnectRestore />
         <TonConnectDiagnostics />
         <Component {...pageProps} />
       </TonConnectUIProvider>
