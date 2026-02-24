@@ -670,11 +670,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             style={{
               width: `${energyPercent * 100}%`,
               backgroundColor: energyColor,
-              boxShadow: `0 0 12px ${energyColor}`,
+              boxShadow: `0 0 16px ${energyColor}`,
             }}
           />
-          <div className="absolute inset-0 flex items-center justify-center text-[7px] font-black text-white/40 uppercase tracking-[0.2em]">
-            {t("game.energy")}
+          <div className="absolute inset-0 flex items-center justify-center text-[7px] font-black text-white/70 uppercase tracking-[0.12em]">
+            {t("game.energy")}: {Math.round(safeEnergy)}/{Math.round(safeMaxEnergy)} (
+            {Math.round(energyPercent * 100)}%)
           </div>
         </div>
       </div>
