@@ -1,6 +1,4 @@
-// Контексты для управления состоянием приложения
-
-import React, { createContext, useContext, ReactNode } from "react";
+﻿import React, { createContext, useContext, ReactNode } from "react";
 
 interface AppContextType {
   isDarkMode: boolean;
@@ -12,22 +10,17 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error("useAppContext должен быть использован внутри AppProvider");
+    throw new Error("useAppContext must be used inside AppProvider");
   }
   return context;
 };
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isDarkMode] = React.useState(true); // Всегда темный режим для neon стиля
+  const [isDarkMode] = React.useState(true);
 
   const toggleDarkMode = () => {
-    // Neon стиль работает только в темном режиме
-    console.log("Темный режим всегда включен");
+    console.log("Dark mode is always enabled");
   };
 
-  return (
-    <AppContext.Provider value={{ isDarkMode, toggleDarkMode }}>
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={{ isDarkMode, toggleDarkMode }}>{children}</AppContext.Provider>;
 };

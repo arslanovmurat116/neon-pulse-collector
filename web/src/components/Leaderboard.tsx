@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
+import { useI18n } from "@/i18n";
 
 type ScoreEntry = {
   id: string;
@@ -47,6 +48,7 @@ type LeaderboardProps = {
 };
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ latestScore }) => {
+  const { t } = useI18n();
   const [scores, setScores] = useState<ScoreEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [best, setBest] = useState(0);
@@ -67,21 +69,21 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ latestScore }) => {
 
   return (
     <div className="bg-neon-dark/60 border border-neon-purple/20 rounded-lg p-6">
-      <h3 className="text-xl font-bold text-neon-green mb-4">Лидерборд</h3>
+      <h3 className="text-xl font-bold text-neon-green mb-4">{t("leaderboard.title")}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm">
         <div className="p-4 rounded-lg bg-neon-dark/60 border border-neon-cyan/20">
-          <div className="text-neon-cyan/70">Собрано шаров за всё время</div>
+          <div className="text-neon-cyan/70">{t("leaderboard.total")}</div>
           <div className="text-2xl font-bold text-neon-green">{total}</div>
         </div>
         <div className="p-4 rounded-lg bg-neon-dark/60 border border-neon-cyan/20">
-          <div className="text-neon-cyan/70">Лучшая попытка</div>
+          <div className="text-neon-cyan/70">{t("leaderboard.best")}</div>
           <div className="text-2xl font-bold text-neon-green">{best}</div>
         </div>
       </div>
 
-      <div className="text-neon-cyan/70 text-sm mb-3">Топ-10 попыток (локально)</div>
+      <div className="text-neon-cyan/70 text-sm mb-3">{t("leaderboard.top10")}</div>
       {scores.length === 0 ? (
-        <div className="text-neon-cyan/70 text-sm">Пока нет результатов.</div>
+        <div className="text-neon-cyan/70 text-sm">{t("leaderboard.empty")}</div>
       ) : (
         <ul className="space-y-2">
           {scores.slice(0, 10).map((entry, idx) => (
@@ -98,9 +100,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ latestScore }) => {
           ))}
         </ul>
       )}
-      <div className="text-xs text-neon-purple/60 mt-4">
-        Глобальный лидерборд будет позже.
-      </div>
+      <div className="text-xs text-neon-purple/60 mt-4">{t("leaderboard.globalLater")}</div>
     </div>
   );
 };

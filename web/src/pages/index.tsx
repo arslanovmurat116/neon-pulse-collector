@@ -6,41 +6,16 @@ import { PurchaseStatus } from "@/components/PurchaseStatus";
 import { ModalOverlay } from "@/components/ModalOverlay";
 import { WalletConnect } from "@/components/WalletConnect";
 import { getUpgrades, PlayerUpgrades, subscribeUpgradesChange } from "@/utils/playerUpgrades";
+import { Lang, setStoredLang, useI18n } from "@/i18n";
 
 type ActiveView = "home" | "play" | "leaderboard" | "shop";
-type Lang = "ru" | "en";
 
 const TILE_BASE =
   "w-full p-6 md:p-8 rounded-2xl border text-left transition-all hover:scale-[1.01] active:scale-[0.99]";
 
-const i18n = {
-  ru: {
-    play: "Играть",
-    leaderboard: "Лидерборд",
-    shop: "Покупки",
-    playDesc: "Начать игру",
-    leaderboardDesc: "Локальный рейтинг",
-    shopDesc: "Улучшения для игры",
-    close: "Закрыть",
-    langRu: "RU",
-    langEn: "EN",
-  },
-  en: {
-    play: "Play",
-    leaderboard: "Leaderboard",
-    shop: "Shop",
-    playDesc: "Start game",
-    leaderboardDesc: "Local ranking",
-    shopDesc: "Game upgrades",
-    close: "Close",
-    langRu: "RU",
-    langEn: "EN",
-  },
-} as const;
-
 export default function Home() {
   const [activeView, setActiveView] = useState<ActiveView>("home");
-  const [lang, setLang] = useState<Lang>("ru");
+  const { lang, t } = useI18n();
   const [upgrades, setUpgrades] = useState<PlayerUpgrades>({
     energyBonus: 0,
     shieldBoost: 0,
@@ -55,46 +30,28 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    try {
-      const savedLang = localStorage.getItem("lang");
-      if (savedLang === "ru" || savedLang === "en") {
-        setLang(savedLang);
-      }
-    } catch {
-      setLang("ru");
-    }
-  }, []);
-
   const changeLang = (nextLang: Lang) => {
-    setLang(nextLang);
-    try {
-      localStorage.setItem("lang", nextLang);
-    } catch {
-      // ignore localStorage errors
-    }
+    setStoredLang(nextLang);
   };
-
-  const t = i18n[lang];
 
   const tiles = useMemo(
     () => [
       {
         key: "play",
-        title: t.play,
-        desc: t.playDesc,
+        title: t("home.play"),
+        desc: t("home.playDesc"),
         className: "border-neon-green/40 bg-neon-green/10",
       },
       {
         key: "leaderboard",
-        title: t.leaderboard,
-        desc: t.leaderboardDesc,
+        title: t("home.leaderboard"),
+        desc: t("home.leaderboardDesc"),
         className: "border-neon-cyan/40 bg-neon-cyan/10",
       },
       {
         key: "shop",
-        title: t.shop,
-        desc: t.shopDesc,
+        title: t("home.shop"),
+        desc: t("home.shopDesc"),
         className: "border-neon-purple/40 bg-neon-purple/10",
       },
     ],
@@ -105,7 +62,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-neon-dark via-neon-dark to-neon-dark/90 text-white">
       <header className="px-4 md:px-6 pt-6 pb-4 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-neon-green">Neon Pulse Collector</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-neon-green">{t("app.name")}</h1>
         </div>
         <div className="sticky top-4 flex items-center gap-3">
           <div className="inline-flex rounded-lg border border-slate-700 overflow-hidden">
@@ -115,7 +72,7 @@ export default function Home() {
                 lang === "ru" ? "bg-neon-green/20 text-neon-green" : "bg-slate-900/60 text-slate-300"
               }`}
             >
-              {t.langRu}
+              {t("common.langRu")}
             </button>
             <button
               onClick={() => changeLang("en")}
@@ -123,7 +80,7 @@ export default function Home() {
                 lang === "en" ? "bg-neon-green/20 text-neon-green" : "bg-slate-900/60 text-slate-300"
               }`}
             >
-              {t.langEn}
+              {t("common.langEn")}
             </button>
           </div>
           <WalletConnect />
@@ -155,25 +112,25 @@ export default function Home() {
             />
           </div>
           <div className="absolute top-0 left-0 right-0 p-4 md:p-6 flex items-center justify-between bg-slate-950/60 backdrop-blur-sm">
-            <h2 className="text-lg md:text-2xl font-bold text-neon-green">{t.play}</h2>
+            <h2 className="text-lg md:text-2xl font-bold text-neon-green">{t("home.play")}</h2>
             <button
               onClick={() => setActiveView("home")}
               className="px-3 py-2 rounded-lg bg-slate-800/60 text-white text-sm hover:bg-slate-700/80"
             >
-              {t.close}
+              {t("common.close")}
             </button>
           </div>
         </div>
       )}
 
       {activeView === "leaderboard" && (
-        <ModalOverlay title={t.leaderboard} onClose={() => setActiveView("home")}>
+        <ModalOverlay title={t("home.leaderboard")} onClose={() => setActiveView("home")}>
           <Leaderboard latestScore={latestScore} />
         </ModalOverlay>
       )}
 
       {activeView === "shop" && (
-        <ModalOverlay title={t.shop} onClose={() => setActiveView("home")}>
+        <ModalOverlay title={t("home.shop")} onClose={() => setActiveView("home")}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PaymentShop />
             <PurchaseStatus />

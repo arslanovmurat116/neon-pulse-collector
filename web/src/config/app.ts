@@ -1,4 +1,4 @@
-export const APP_NAME = "Neon Pulse Collector";
+﻿export const APP_NAME = "Neon Pulse Collector";
 export const APP_DESCRIPTION = "Offchain game with onchain TON payments";
 
 export const TON_CONFIG = {
@@ -18,21 +18,21 @@ export const PAYMENT_OPCODES = {
 };
 
 export const SHOP_ITEMS = [
-  { id: "energy", title: "Energy cooldown reset", opcode: PAYMENT_OPCODES.ENERGY, priceTon: "0.2" },
-  { id: "shield", title: "Extra shields", opcode: PAYMENT_OPCODES.SHIELD, priceTon: "0.3" },
-  { id: "magnet", title: "Extra magnets", opcode: PAYMENT_OPCODES.MAGNET, priceTon: "0.25" },
-  { id: "bundle", title: "Bundle (1+2+3 со скидкой)", opcode: PAYMENT_OPCODES.BUNDLE, priceTon: "0.6" },
+  { id: "energy", titleKey: "shop.item.energy", opcode: PAYMENT_OPCODES.ENERGY, priceTon: "0.2" },
+  { id: "shield", titleKey: "shop.item.shield", opcode: PAYMENT_OPCODES.SHIELD, priceTon: "0.3" },
+  { id: "magnet", titleKey: "shop.item.magnet", opcode: PAYMENT_OPCODES.MAGNET, priceTon: "0.25" },
+  { id: "bundle", titleKey: "shop.item.bundle", opcode: PAYMENT_OPCODES.BUNDLE, priceTon: "0.6" },
 ];
 
 export const ERROR_MESSAGES = {
-  WALLET_NOT_CONNECTED: "Кошелек не подключен",
-  INVALID_AMOUNT: "Неверная сумма",
-  TRANSACTION_FAILED: "Ошибка при отправке транзакции",
-  NETWORK_ERROR: "Ошибка сети",
-  CONTRACT_ERROR: "Ошибка смарт-контракта",
-  INSUFFICIENT_BALANCE: "Недостаточно средств",
+  WALLET_NOT_CONNECTED: "error.walletNotConnected",
+  INVALID_AMOUNT: "error.invalidAmount",
+  TRANSACTION_FAILED: "error.transactionFailed",
+  NETWORK_ERROR: "error.network",
+  CONTRACT_ERROR: "error.contract",
+  INSUFFICIENT_BALANCE: "error.insufficientBalance",
 };
 
 export const SUCCESS_MESSAGES = {
-  PURCHASE_SUCCESS: "Покупка успешно выполнена",
+  PURCHASE_SUCCESS: "success.purchase",
 };

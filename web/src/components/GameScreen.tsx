@@ -9,6 +9,7 @@ import {
   SPAWN_RATE,
 } from "@/game/constants";
 import type { PlayerUpgrades } from "@/utils/playerUpgrades";
+import { useI18n } from "@/i18n";
 
 type GameScreenProps = {
   upgrades: PlayerUpgrades;
@@ -21,6 +22,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   onGameOver,
   active = true,
 }) => {
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -582,40 +584,40 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         <div className="flex flex-col items-center md:items-start gap-1 pointer-events-auto">
           <div className="text-white text-xl md:text-2xl font-black tracking-tighter drop-shadow-lg flex items-center gap-3">
             <span>
-              SCORE: <span className="text-blue-400">{score}</span>
+              {t("game.score")}: <span className="text-blue-400">{score}</span>
             </span>
             <div className="flex gap-2">
               <button
                 onClick={() => setIsMuted(!isMuted)}
                 className="px-2 py-1 bg-slate-800/60 rounded-lg hover:bg-slate-700/80 transition-colors text-xs"
               >
-                {isMuted ? "Muted" : "Sound"}
+                {isMuted ? t("game.muted") : t("game.sound")}
               </button>
               <button
                 onClick={togglePause}
                 className="px-2 py-1 bg-slate-800/60 rounded-lg hover:bg-slate-700/80 transition-colors text-xs"
               >
-                {status === GameStatus.PAUSED ? "Resume" : "Pause"}
+                {status === GameStatus.PAUSED ? t("game.resume") : t("game.pause")}
               </button>
             </div>
           </div>
           <div className="text-slate-500 text-[10px] font-bold tracking-widest uppercase">
-            High Score: {highScore}
+            {t("game.highScore")}: {highScore}
           </div>
 
           <div className="flex gap-2 mt-2">
             {activeBonuses.shield > 0 && (
               <div className="px-3 py-1 bg-pink-500/20 border border-pink-400/40 rounded-full text-pink-400 text-[9px] font-black uppercase tracking-widest animate-pulse backdrop-blur-sm">
-                Shield {Math.ceil(activeBonuses.shield / 60)}s
+                {t("game.shield")} {Math.ceil(activeBonuses.shield / 60)}s
               </div>
             )}
             {activeBonuses.magnet > 0 && (
               <div className="px-3 py-1 bg-purple-500/20 border border-purple-400/40 rounded-full text-purple-400 text-[9px] font-black uppercase tracking-widest animate-pulse backdrop-blur-sm">
-                Magnet {Math.ceil(activeBonuses.magnet / 60)}s
+                {t("game.magnet")} {Math.ceil(activeBonuses.magnet / 60)}s
               </div>
             )}
             <div className="px-3 py-1 bg-slate-800/50 border border-slate-700/50 rounded-full text-slate-300 text-[9px] font-black uppercase tracking-widest">
-              Max balls: {120 + upgrades.ballsBonus}
+              {t("game.maxBalls")}: {120 + upgrades.ballsBonus}
             </div>
           </div>
         </div>
@@ -630,7 +632,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             }}
           />
           <div className="absolute inset-0 flex items-center justify-center text-[7px] font-black text-white/40 uppercase tracking-[0.2em]">
-            Energy
+            {t("game.energy")}
           </div>
         </div>
       </div>
@@ -639,16 +641,16 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         <div className="absolute inset-0 flex items-center justify-center bg-slate-950/90 backdrop-blur-xl z-50 p-4">
           <div className="p-6 md:p-8 bg-slate-900/60 border border-slate-800 rounded-3xl shadow-2xl max-w-md w-full text-center">
             <h1 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight">
-              Neon Pulse
+              {t("game.title")}
             </h1>
             <p className="text-slate-400 text-sm mb-6">
-              Collect energy, avoid hazards, and unlock upgrades with TON.
+              {t("game.subtitle")}
             </p>
             <button
               onClick={resetGame}
               className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all active:scale-95"
             >
-              Start Game
+              {t("game.start")}
             </button>
           </div>
         </div>
@@ -657,12 +659,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       {status === GameStatus.PAUSED && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md z-40 p-4">
           <div className="text-center p-6 bg-slate-900/40 border border-slate-800/50 rounded-2xl max-w-sm w-full">
-            <h2 className="text-3xl font-black text-white mb-4">Paused</h2>
+            <h2 className="text-3xl font-black text-white mb-4">{t("game.paused")}</h2>
             <button
               onClick={togglePause}
               className="w-full px-6 py-3 bg-white text-slate-950 font-bold rounded-xl hover:scale-105 active:scale-95 transition-all"
             >
-              Resume
+              {t("game.resume")}
             </button>
           </div>
         </div>
@@ -671,13 +673,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({
       {status === GameStatus.GAMEOVER && (
         <div className="absolute inset-0 flex items-center justify-center bg-red-950/30 backdrop-blur-lg z-50 p-4">
           <div className="text-center p-6 bg-slate-900/80 border border-red-900/30 rounded-2xl shadow-2xl max-w-sm w-full">
-            <h2 className="text-3xl font-black text-red-400 mb-4 tracking-tight">Game Over</h2>
+            <h2 className="text-3xl font-black text-red-400 mb-4 tracking-tight">
+              {t("game.gameOver")}
+            </h2>
             <div className="text-white mb-6">
-              <div className="text-xs text-slate-400 uppercase tracking-widest">Score</div>
+              <div className="text-xs text-slate-400 uppercase tracking-widest">{t("game.score")}</div>
               <div className="text-3xl font-black text-blue-400">{score}</div>
               {score >= highScore && score > 0 && (
                 <div className="text-yellow-400 text-xs font-bold uppercase tracking-widest mt-2">
-                  New record
+                  {t("game.newRecord")}
                 </div>
               )}
             </div>
@@ -685,7 +689,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
               onClick={resetGame}
               className="w-full px-6 py-3 bg-white text-slate-950 hover:bg-slate-200 font-bold rounded-xl transition-all active:scale-95"
             >
-              Restart
+              {t("game.restart")}
             </button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useI18n } from "@/i18n";
 
 type ModalOverlayProps = {
   title: string;
@@ -15,6 +16,7 @@ export const ModalOverlay: React.FC<ModalOverlayProps> = ({
   open = true,
   contentClassName,
 }) => {
+  const { t } = useI18n();
   return (
     <div
       className={`fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md ${
@@ -29,7 +31,7 @@ export const ModalOverlay: React.FC<ModalOverlayProps> = ({
             onClick={onClose}
             className="px-3 py-2 rounded-lg bg-slate-800/60 text-white text-sm hover:bg-slate-700/80"
           >
-            Close
+            {t("common.close")}
           </button>
         </div>
         <div
