@@ -95,7 +95,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
   useEffect(() => {
     gameState.current.maxEnergy = maxEnergy;
-    setEnergy((prev) => Math.min(prev, maxEnergy));
+    const clamped = Math.min(gameState.current.energy, maxEnergy);
+    gameState.current.energy = clamped;
+    setEnergy(clamped);
   }, [maxEnergy]);
 
   useEffect(() => {
@@ -603,7 +605,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
   const energyColor = useMemo(() => (energy > 30 ? COLORS.ENERGY : COLORS.HAZARD), [energy]);
   const unlockUpgradesChars = useMemo(() => t("game.onboarding.unlockHighlight").split(""), [t]);
-  const energyPercent = Math.min(1, Math.max(0, energy / maxEnergy));
+  const safeMaxEnergy = maxEnergy > 0 ? maxEnergy : 1;
+  const energyPercent = Math.min(1, Math.max(0, energy / safeMaxEnergy));
   console.log("[ENERGY]", { energy, maxEnergy, percent: energyPercent });
 
   if (!mounted) return null;
