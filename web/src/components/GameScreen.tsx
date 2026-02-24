@@ -570,6 +570,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   }, [status, score, highScore, onGameOver]);
 
   const energyColor = useMemo(() => (energy > 30 ? COLORS.ENERGY : COLORS.HAZARD), [energy]);
+  const unlockUpgradesChars = useMemo(() => "Unlock upgrades".split(""), []);
 
   if (!mounted) return null;
 
@@ -643,9 +644,25 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             <h1 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight">
               {t("game.title")}
             </h1>
-            <p className="text-slate-400 text-sm mb-6">
-              {t("game.subtitle")}
-            </p>
+            <div className="text-slate-400 text-sm mb-6 space-y-1">
+              <p>
+                Catch <span style={{ color: "#22c55e" }}>GREEN</span> energy orbs
+              </p>
+              <p>
+                Avoid <span style={{ color: "#ef4444" }}>RED</span> threats
+              </p>
+              <p>
+                {unlockUpgradesChars.map((char, index) => (
+                  <span
+                    key={`${char}-${index}`}
+                    style={{ color: index % 2 === 0 ? "#ff2bd6" : "#9b5cff" }}
+                  >
+                    {char}
+                  </span>
+                ))}{" "}
+                with <span style={{ color: "#22d3ee" }}>TON</span>
+              </p>
+            </div>
             <button
               onClick={resetGame}
               className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all active:scale-95"
