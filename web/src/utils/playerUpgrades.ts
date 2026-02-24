@@ -58,21 +58,6 @@ export function getUpgrades(): PlayerUpgrades {
   if (typeof window === "undefined") {
     return { energyBonus: 0, shieldBoost: 0, magnetBoost: 0, ballsBonus: 0 };
   }
-  try {
-    const raw = localStorage.getItem(UPGRADES_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<PlayerUpgrades>;
-      const normalized: PlayerUpgrades = {
-        energyBonus: Number.isFinite(Number(parsed.energyBonus)) ? Number(parsed.energyBonus) : 0,
-        shieldBoost: Number.isFinite(Number(parsed.shieldBoost)) ? Number(parsed.shieldBoost) : 0,
-        magnetBoost: Number.isFinite(Number(parsed.magnetBoost)) ? Number(parsed.magnetBoost) : 0,
-        ballsBonus: Number.isFinite(Number(parsed.ballsBonus)) ? Number(parsed.ballsBonus) : 0,
-      };
-      return normalized;
-    }
-  } catch {
-    // ignore
-  }
   const purchases = getPurchases();
   const upgrades = computeUpgrades(purchases);
   saveUpgrades(upgrades);
