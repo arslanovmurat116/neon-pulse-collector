@@ -570,7 +570,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   }, [status, score, highScore, onGameOver]);
 
   const energyColor = useMemo(() => (energy > 30 ? COLORS.ENERGY : COLORS.HAZARD), [energy]);
-  const unlockUpgradesChars = useMemo(() => "Unlock upgrades".split(""), []);
+  const unlockUpgradesChars = useMemo(() => t("game.onboarding.unlockHighlight").split(""), [t]);
 
   if (!mounted) return null;
 
@@ -646,10 +646,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({
             </h1>
             <div className="text-slate-400 text-sm mb-6 space-y-1">
               <p>
-                Catch <span style={{ color: "#22c55e" }}>GREEN</span> energy orbs
+                {t("game.onboarding.catchPrefix")}
+                <span style={{ color: "#39ff14" }}>{t("game.onboarding.catchHighlight")}</span>
               </p>
               <p>
-                Avoid <span style={{ color: "#ef4444" }}>RED</span> threats
+                {t("game.onboarding.avoidPrefix")}
+                <span style={{ color: "#ff3b30" }}>{t("game.onboarding.avoidHighlight")}</span>
               </p>
               <p>
                 {unlockUpgradesChars.map((char, index) => (
@@ -659,8 +661,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                   >
                     {char}
                   </span>
-                ))}{" "}
-                with <span style={{ color: "#22d3ee" }}>TON</span>
+                ))}
+                {t("game.onboarding.unlockConnector")}
+                <span style={{ color: "#2aa8ff" }}>{t("game.onboarding.ton")}</span>
               </p>
             </div>
             <button
