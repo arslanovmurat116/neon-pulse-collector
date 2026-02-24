@@ -18,10 +18,10 @@ export const PAYMENT_OPCODES = {
 };
 
 export const SHOP_ITEMS = [
-  { id: "energy", titleKey: "shop.item.energy", opcode: PAYMENT_OPCODES.ENERGY, priceTon: "0.2" },
-  { id: "shield", titleKey: "shop.item.shield", opcode: PAYMENT_OPCODES.SHIELD, priceTon: "0.3" },
-  { id: "magnet", titleKey: "shop.item.magnet", opcode: PAYMENT_OPCODES.MAGNET, priceTon: "0.25" },
-  { id: "bundle", titleKey: "shop.item.bundle", opcode: PAYMENT_OPCODES.BUNDLE, priceTon: "0.6" },
+  { id: "energy", titleKey: "shop.item.energy", opcode: PAYMENT_OPCODES.ENERGY, priceTon: "2" },
+  { id: "shield", titleKey: "shop.item.shield", opcode: PAYMENT_OPCODES.SHIELD, priceTon: "3" },
+  { id: "magnet", titleKey: "shop.item.magnet", opcode: PAYMENT_OPCODES.MAGNET, priceTon: "3" },
+  { id: "bundle", titleKey: "shop.item.bundle", opcode: PAYMENT_OPCODES.BUNDLE, priceTon: "6" },
 ];
 
 export const ERROR_MESSAGES = {
@@ -36,3 +36,5 @@ export const ERROR_MESSAGES = {
 export const SUCCESS_MESSAGES = {
   PURCHASE_SUCCESS: "success.purchase",
 };
+
+
