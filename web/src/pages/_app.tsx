@@ -4,6 +4,7 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import type { TonConnect } from "@tonconnect/sdk";
 import { useTonConnectUI } from "@tonconnect/ui-react";
+import TelegramAnalytics from "@telegram-apps/analytics";
 import { TonConnectDiagnostics } from "@/components/TonConnectDiagnostics";
 import "@/styles/globals.css";
 
@@ -11,6 +12,22 @@ const TonConnectUIProvider = dynamic(
   () => import("@tonconnect/ui-react").then((m) => m.TonConnectUIProvider),
   { ssr: false }
 );
+
+const analyticsToken = (process.env.NEXT_PUBLIC_TG_ANALYTICS_TOKEN || "").trim();
+const analyticsAppName = (process.env.NEXT_PUBLIC_TG_ANALYTICS_APP_NAME || "").trim();
+let analyticsInitialized = false;
+
+if (
+  typeof window !== "undefined" &&
+  !analyticsInitialized &&
+  analyticsToken &&
+  analyticsAppName
+) {
+  analyticsInitialized = true;
+  TelegramAnalytics.init({ token: analyticsToken, appName: analyticsAppName }).catch((err) => {
+    console.warn("[TG_ANALYTICS] init failed", err);
+  });
+}
 
 function TonConnectRestore() {
   const [tonConnectUI] = useTonConnectUI();

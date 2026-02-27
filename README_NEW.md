@@ -8,6 +8,15 @@ npm run deploy
 
 See `DEPLOYMENT.md` and `contracts/DEPLOYMENT.md` for details.
 
+## Telegram Analytics Env
+
+Set these in `web/.env.local` (or Vercel Production env):
+
+```bash
+NEXT_PUBLIC_TG_ANALYTICS_TOKEN=...
+NEXT_PUBLIC_TG_ANALYTICS_APP_NAME=...
+```
+
 ## TG-ready (5 steps)
 
 1. `npm run deploy`
