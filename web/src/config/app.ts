@@ -2,12 +2,14 @@
 export const APP_DESCRIPTION = "Offchain game with onchain TON payments";
 
 export const TON_CONFIG = {
-  network: "testnet" as const,
-  endpoint: process.env.NEXT_PUBLIC_TON_ENDPOINT || "https://testnet.toncenter.com/api/v2/jsonRPC",
+  network: "mainnet" as const,
+  endpoint: process.env.NEXT_PUBLIC_TON_ENDPOINT || "https://toncenter.com/api/v2/jsonRPC",
 };
 
 export const CONTRACT_ADDRESSES = {
-  payment: process.env.NEXT_PUBLIC_PAYMENT_ADDRESS || "",
+  payment:
+    process.env.NEXT_PUBLIC_PAYMENT_ADDRESS ||
+    "UQDGavrN438GIgDJ0cdYKXgAM-DoCW7vptMxgaitS13FRWcV",
 };
 
 export const PAYMENT_OPCODES = {
@@ -36,5 +38,3 @@ export const ERROR_MESSAGES = {
 export const SUCCESS_MESSAGES = {
   PURCHASE_SUCCESS: "success.purchase",
 };
-
-
