@@ -80,10 +80,6 @@ export default function App({ Component, pageProps }: AppProps) {
     tg.expand();
   }, []);
 
-  useEffect(() => {
-    localStorage.clear();
-  }, []);
-
   if (!ready) {
     return null;
   }
