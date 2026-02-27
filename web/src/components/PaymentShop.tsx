@@ -12,6 +12,7 @@ function loadPurchases(): PurchaseState {
 }
 
 export const PaymentShop: React.FC = () => {
+  const TX_VALIDITY_SECONDS = 15 * 60;
   const [tonConnectUI] = useTonConnectUI();
   const address = useTonAddress(true);
   const { t } = useI18n();
@@ -39,7 +40,7 @@ export const PaymentShop: React.FC = () => {
         payload: message.payload,
       });
       await tonConnectUI.sendTransaction({
-        validUntil: Math.floor(Date.now() / 1000) + 60,
+        validUntil: Math.floor(Date.now() / 1000) + TX_VALIDITY_SECONDS,
         messages: [message],
       });
 
