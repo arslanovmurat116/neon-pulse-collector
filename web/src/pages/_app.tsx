@@ -24,9 +24,13 @@ if (
   analyticsAppName
 ) {
   analyticsInitialized = true;
-  TelegramAnalytics.init({ token: analyticsToken, appName: analyticsAppName }).catch((err) => {
-    console.warn("[TG_ANALYTICS] init failed", err);
-  });
+  TelegramAnalytics.init({ token: analyticsToken, appName: analyticsAppName })
+    .then(() => {
+      console.log("[TG_ANALYTICS] init done");
+    })
+    .catch((err) => {
+      console.warn("[TG_ANALYTICS] init failed", err);
+    });
 }
 
 function TonConnectRestore() {
